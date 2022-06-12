@@ -57,21 +57,21 @@ namespace System.Reflection
             return s_recordTypeCaches.GetOrAdd(type, IsRecordType);
 
             static bool IsRecordType(Type t) =>
-                !t.IsInterface && 
-                !t.IsEnum &&
-                typeof(IEquatable<>).MakeGenericType(t).IsAssignableFrom(t) &&
-                t.GetMethod("ToString", Public | Instance, Type.EmptyTypes) is MethodInfo toString && (IsOverridden(toString) || IsCompilerGenerated(toString)) &&
-                t.GetMethod("GetHashCode", Public | Instance, Type.EmptyTypes) is MethodInfo getHashCode && (IsOverridden(getHashCode) || IsCompilerGenerated(getHashCode)) &&
-                t.GetMethod("PrintMembers", NonPublic | Instance, new[] { typeof(StringBuilder) }) is MethodInfo printMembers && IsCompilerGenerated(printMembers) &&
-                t.GetMethod("op_Equality", Public | Static, new[] { t, t }) is MethodInfo op_Equality && IsCompilerGenerated(op_Equality) &&
-                t.GetMethod("op_Inequality", Public | Static, new[] { t, t }) is MethodInfo op_Inequality && IsCompilerGenerated(op_Inequality) &&
-                t.GetMethod("Equals", Public | Instance, new[] { typeof(object) }) is MethodInfo equals && IsCompilerGenerated(equals) &&
-                t.GetMethod("Equals", Public | Instance, new[] { t }) is MethodInfo typeEquals && (IsCompilerGenerated(typeEquals)) &&
-                t.IsValueType || t.GetMethod("<Clone>$", Public | Instance) is MethodInfo clone && IsCompilerGenerated(clone) &&
-                t.IsValueType || t.GetConstructor(NonPublic | Instance, new[] { t }) is ConstructorInfo forClone && IsCompilerGenerated(forClone) &&
-                t.IsValueType || t.GetMethod("get_EqualityContract", NonPublic | Instance) is MethodInfo getEqualityContract && IsCompilerGenerated(getEqualityContract) &&
-                true
-                ;
+                 !t.IsInterface &&
+                 !t.IsEnum &&
+                 typeof(IEquatable<>).MakeGenericType(t).IsAssignableFrom(t) &&
+                 t.GetMethod("ToString", Public | Instance, Type.EmptyTypes) is MethodInfo toString && (IsOverridden(toString) || IsCompilerGenerated(toString)) &&
+                 t.GetMethod("GetHashCode", Public | Instance, Type.EmptyTypes) is MethodInfo getHashCode && (IsOverridden(getHashCode) || IsCompilerGenerated(getHashCode)) &&
+                 t.GetMethod("PrintMembers", NonPublic | Instance, new[] { typeof(StringBuilder) }) is MethodInfo printMembers && IsCompilerGenerated(printMembers) &&
+                 t.GetMethod("op_Equality", Public | Static, new[] { t, t }) is MethodInfo op_Equality && IsCompilerGenerated(op_Equality) &&
+                 t.GetMethod("op_Inequality", Public | Static, new[] { t, t }) is MethodInfo op_Inequality && IsCompilerGenerated(op_Inequality) &&
+                 t.GetMethod("Equals", Public | Instance, new[] { typeof(object) }) is MethodInfo equals && IsCompilerGenerated(equals) &&
+                 t.GetMethod("Equals", Public | Instance, new[] { t }) is MethodInfo typeEquals && IsCompilerGenerated(typeEquals) &&
+                 (t.IsValueType || (
+                     t.GetMethod("<Clone>$", Public | Instance) is MethodInfo clone && IsCompilerGenerated(clone) &&
+                     t.GetConstructor(NonPublic | Instance, new[] { t }) is ConstructorInfo forClone && IsCompilerGenerated(forClone) &&
+                     t.GetMethod("get_EqualityContract", NonPublic | Instance) is MethodInfo getEqualityContract && IsCompilerGenerated(getEqualityContract)))
+                 ;
 
             static bool IsCompilerGenerated(MemberInfo member) => member.IsDefined(typeof(CompilerGeneratedAttribute));
             static bool IsOverridden(MethodInfo m) => m.GetBaseDefinition().DeclaringType != m.DeclaringType;
