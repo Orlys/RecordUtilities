@@ -12,7 +12,7 @@ See those articles in Stackoverflow.
 
 
 ### HOW?
-Add ```RecordHelpers.cs``` to your project at first.
+Add ```RecordHelpers.cs``` to your project first.
 
 ```csharp
 using System.Reflection;
